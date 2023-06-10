@@ -1,6 +1,7 @@
 package com.bikkadIT.ElectronicStore.payloads;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
@@ -13,5 +14,5 @@ public class ApiResponse {
 
     private boolean success;
 
-    private String status;
+    private HttpStatus status;
 }

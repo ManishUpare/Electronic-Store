@@ -27,7 +27,7 @@ public class GlobalExceptionalHandler {
 
         logger.info("Exception handler invoked !!");
 
-        ApiResponse ar = ApiResponse.builder().message(ex.getMessage()).success(true).build();
+        ApiResponse ar = ApiResponse.builder().message(ex.getMessage()).status(HttpStatus.NOT_FOUND).success(true).build();
 
         // String message = ex.getMessage();
         // ApiResponse ar = new ApiResponse(message, true);
