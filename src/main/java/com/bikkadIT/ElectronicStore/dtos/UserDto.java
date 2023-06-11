@@ -33,7 +33,7 @@ public class UserDto {
     @Size(min = 4, max = 6, message = "Invalid gender !!")
     private String gender;
 
-    @NotBlank(message = "Writ about yourself !!")
+    @NotBlank(message = "Write about yourself !!")
     private String about;
 
     @imageNameValid
