@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name="users")
-public class User {
+public class User extends  CustomFields {
 
     @Id
   //  @GeneratedValue(strategy = GenerationType.IDENTITY)

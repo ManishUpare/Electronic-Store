@@ -2,6 +2,7 @@ package com.bikkadIT.ElectronicStore.controller;
 
 import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.helper.AppConstant;
+import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.payloads.ApiResponse;
 import com.bikkadIT.ElectronicStore.services.UserService;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class UserController {
      * @return
      */
 
-    Logger logger= LoggerFactory.getLogger(UserController.class);
+    Logger logger = LoggerFactory.getLogger(UserController.class);
 
     //create
     @PostMapping("/create")
@@ -43,111 +44,111 @@ public class UserController {
 
     }
 
-    /**@apiNote This method is for Updating User
+    /**
      * @param userDto
      * @param userId
      * @return
+     * @apiNote This method is for Updating User
      */
 
 
     //update
-
     @PutMapping("/update/{userId}")
     public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable String userId) {
 
-        logger.info("Entering the request for update user details with userId:{}",userId);
+        logger.info("Entering the request for update user details with userId:{}", userId);
         UserDto userDto1 = userService.updateUser(userDto, userId);
 
-        logger.info("Completed the request for update user details with userId:{}",userId);
+        logger.info("Completed the request for update user details with userId:{}", userId);
         return new ResponseEntity<UserDto>(userDto1, HttpStatus.OK);
     }
 
     /**
-     * @apiNote This method is for Deleting User
      * @param userId
      * @return
+     * @apiNote This method is for Deleting User
      */
 
     //delete
-
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable String userId) {
 
-        logger.info("Entering the request for delete user details with userId:{}",userId);
+        logger.info("Entering the request for delete user details with userId:{}", userId);
         userService.deleteUser(userId);
 
-        ApiResponse apiResponse=new ApiResponse();
+        ApiResponse apiResponse = new ApiResponse();
         apiResponse.setMessage(AppConstant.USER_DELETE);
         apiResponse.setSuccess(true);
         apiResponse.setStatus(HttpStatus.OK);
 
-        logger.info("Completed the request for delete details with userId:{}",userId);
+        logger.info("Completed the request for delete details with userId:{}", userId);
         return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
 
     }
 
     /**
-     * @apiNote ThiS method is for Getting All User
      * @return
+     * @apiNote ThiS method is for Getting All User
      */
 
     //getAllUser
-
     @GetMapping("/AllUser")
-    public ResponseEntity<List<UserDto>> getAllUsers() {
+    public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
+            @RequestParam(value = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConstant.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstant.SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstant.SORT_DIR, required = false) String sortDir) {
 
         logger.info("Entering the request for get all user data");
-        List<UserDto> allUser = userService.getAllUser();
+        PageableResponse<UserDto> allUser = userService.getAllUser(pageNumber, pageSize, sortBy, sortDir);
 
-        return new ResponseEntity<List<UserDto>>(allUser, HttpStatus.OK);
+        return new ResponseEntity<PageableResponse<UserDto>>(allUser, HttpStatus.OK);
 
     }
 
     /**
-     * @apiNote This method is for Getting User By ID
      * @param userId
      * @return
+     * @apiNote This method is for Getting User By ID
      */
 
     //user by id
     @GetMapping("/getUser/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable String userId) {
 
-        logger.info("Entering the request for get single user details with userId:{}",userId);
+        logger.info("Entering the request for get single user details with userId:{}", userId);
         UserDto userById = userService.getUserById(userId);
 
         return new ResponseEntity<UserDto>(userById, HttpStatus.OK);
     }
 
     /**
-     * @apiNote This method is for Getting User By Email
      * @param email
      * @return
+     * @apiNote This method is for Getting User By Email
      */
 
     //user by email
-
     @GetMapping("/getByEmail/{email}")
     public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
 
-        logger.info("Entering the request to Get Single User details with EmailId:{}",email);
+        logger.info("Entering the request to Get Single User details with EmailId:{}", email);
         UserDto byEmail = userService.getUserByEmail(email);
 
         return new ResponseEntity<UserDto>(byEmail, HttpStatus.OK);
     }
 
     /**
-     * @apiNote This method is for Searching User by Keyword
      * @param keyword
      * @return
+     * @apiNote This method is for Searching User by Keyword
      */
 
     //search keyword
-
     @GetMapping("/searchKeyword/{keyword}")
     public ResponseEntity<List<UserDto>> searchUser(@PathVariable String keyword) {
 
-        logger.info("Entering Request for get the single user details with keyword:{}",keyword);
+        logger.info("Entering Request for get the single user details with keyword:{}", keyword);
         List<UserDto> user = userService.searchUser(keyword);
 
         return new ResponseEntity<List<UserDto>>(user, HttpStatus.OK);

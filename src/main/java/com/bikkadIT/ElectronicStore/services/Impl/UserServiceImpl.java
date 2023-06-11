@@ -3,13 +3,19 @@ package com.bikkadIT.ElectronicStore.services.Impl;
 import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.entities.User;
 import com.bikkadIT.ElectronicStore.exceptions.ResourceNotFoundException;
+import com.bikkadIT.ElectronicStore.helper.PageableResponse;
+import com.bikkadIT.ElectronicStore.payloads.PageHelper;
 import com.bikkadIT.ElectronicStore.repositories.UserRepository;
 import com.bikkadIT.ElectronicStore.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -82,15 +88,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUser() {
+    public PageableResponse<UserDto> getAllUser(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
 
         logger.info("Initiating dao call for the get all users");
-        List<User> allUser = userRepository.findAll();
 
-        List<UserDto> allUserDto = allUser.stream().map((u) -> mapper.map(u, UserDto.class)).collect(Collectors.toList());
+        Sort sort = (sortDir.equalsIgnoreCase("asc")) ? (Sort.by(sortBy).ascending()) : (Sort.by(sortBy).descending());
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<User> page = this.userRepository.findAll(pageable);
+
+        PageableResponse<UserDto> response = PageHelper.getPageResponse(page, UserDto.class);
 
         logger.info("Completing dao call for get All users");
-        return allUserDto;
+        return response;
 
     }
 

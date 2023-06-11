@@ -1,5 +1,6 @@
 package com.bikkadIT.ElectronicStore.dtos;
 
+import com.bikkadIT.ElectronicStore.entities.CustomFields;
 import com.bikkadIT.ElectronicStore.validate.imageNameValid;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class UserDto extends CustomFieldsDto {
 
     private String userId;
 
