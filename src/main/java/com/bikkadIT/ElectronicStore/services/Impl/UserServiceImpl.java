@@ -118,6 +118,7 @@ public class UserServiceImpl implements UserService {
 
         logger.info("Initiating dao call for the get all users");
 
+        //returns true if the strings are equal, and false if not.
         Sort sort = (sortDir.equalsIgnoreCase("asc")) ? (Sort.by(sortBy).ascending()) : (Sort.by(sortBy).descending());
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);

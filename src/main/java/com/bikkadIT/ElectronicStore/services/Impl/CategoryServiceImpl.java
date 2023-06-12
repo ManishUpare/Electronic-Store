@@ -1,16 +1,23 @@
 package com.bikkadIT.ElectronicStore.services.Impl;
 
 import com.bikkadIT.ElectronicStore.dtos.CategoryDto;
+import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.entities.Category;
+import com.bikkadIT.ElectronicStore.entities.User;
 import com.bikkadIT.ElectronicStore.exceptions.ResourceNotFoundException;
 import com.bikkadIT.ElectronicStore.helper.AppConstant;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
+import com.bikkadIT.ElectronicStore.payloads.PageHelper;
 import com.bikkadIT.ElectronicStore.repositories.CategoryRepository;
 import com.bikkadIT.ElectronicStore.services.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 public class CategoryServiceImpl implements CategoryService {
 
@@ -25,12 +32,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
 
-        logger.info("Initiating dao call for the save category details");
+        logger.info("Initiating Category Service for the save category details");
 
         Category category = mapper.map(categoryDto, Category.class);
         Category saveCategory = categoryRepository.save(category);
 
-        logger.info("Completed dao call for the save category details");
+        logger.info("Completed Category Service call for the save category details");
         return mapper.map(saveCategory, CategoryDto.class);
 
     }
@@ -38,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto, String categoryId) {
 
-        logger.info("Entering dao call for the update the Category details with:{}", categoryId);
+        logger.info("Entering Category Service call for the update the Category details with:{}", categoryId);
 
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + categoryId));
 
@@ -48,22 +55,49 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category updatedCategory = categoryRepository.save(category);
 
-        logger.info("Completed dao call for the update the Category details with:{}", categoryId);
+        logger.info("Completed Category Service call for the update the Category details with:{}", categoryId);
         return mapper.map(updatedCategory,CategoryDto.class);
     }
 
     @Override
     public void deleteCategory(String categoryId) {
 
+        logger.info("Initiating Category Service call for the delete the category details with:{}", categoryId);
+
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + categoryId));
+
+        logger.info("Completed Category Service call for the delete the user details with:{}", categoryId);
+
+        categoryRepository.delete(category);
+
+
     }
 
     @Override
-    public PageableResponse<CategoryDto> getAllCategory() {
-        return null;
+    public PageableResponse<CategoryDto> getAllCategory(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+
+        logger.info("Initiating Category Service call for the get all users");
+
+        //returns true if the strings are equal, and false if not.
+        Sort sort = (sortDir.equalsIgnoreCase("asc")) ? (Sort.by(sortBy).ascending()) : (Sort.by(sortBy).descending());
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<Category> page = categoryRepository.findAll(pageable);
+
+        PageableResponse<CategoryDto> response = PageHelper.getPageResponse(page, CategoryDto.class);
+
+        logger.info("Completing Category Service call for get All users");
+        return response;
     }
 
     @Override
     public CategoryDto getSingleCategory(String categoryId) {
-        return null;
+
+        logger.info("Initiating dao call for the get the single user details with:{}", categoryId);
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + categoryId));
+
+        logger.info("Initiating dao call for the get the single user details with:{}", categoryId);
+        return mapper.map(category,CategoryDto.class);
     }
 }
