@@ -4,16 +4,25 @@ import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.helper.AppConstant;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.payloads.ApiResponse;
+import com.bikkadIT.ElectronicStore.payloads.ImageResponse;
+import com.bikkadIT.ElectronicStore.services.FileService;
 import com.bikkadIT.ElectronicStore.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -22,6 +31,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FileService fileService;
+
+    @Value("${user.profile.image.path}")
+    private String imageUploadPath;
 
     /**
      * @Author Manish Upare
@@ -152,6 +167,63 @@ public class UserController {
         List<UserDto> user = userService.searchUser(keyword);
 
         return new ResponseEntity<List<UserDto>>(user, HttpStatus.OK);
+    }
+
+    /**
+     * @apiNote This method is for uploading User Image
+     * @param image
+     * @param userId
+     * @return
+     * @throws IOException
+     */
+
+    // upload User image
+
+    @PostMapping("/imageUpload/{userId}")
+    public ResponseEntity<ImageResponse> uploadUserImage(@RequestPart("userImage") MultipartFile image,
+                                                         @PathVariable String userId) throws IOException {
+
+        logger.info("Entering the request to Upload Image in the User with User ID: {} ", userId);
+
+        UserDto user = userService.getUserById(userId);
+        String imageName = fileService.uploadFile(image, imageUploadPath);
+
+        user.setImageName(imageName);
+        UserDto userDto = userService.updateUser(user, userId);
+
+        ImageResponse imageResponse = ImageResponse
+                .builder().imageName(imageName).message("Image Upload Successfully !!").success(true).status(HttpStatus.CREATED).build();
+
+        logger.info("Completed the request of Uploading Image in the User with User ID: {} ", userId);
+
+        return new ResponseEntity<ImageResponse>(imageResponse, HttpStatus.CREATED);
+
+    }
+
+    /**
+     * @apiNote This method is for getting User Image
+     * @param userId
+     * @param response
+     * @throws IOException
+     */
+
+    // serve user image
+
+    @GetMapping(value = "/user/image/{userId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public void serveUserImage(@PathVariable String userId, HttpServletResponse response)
+            throws IOException {
+
+        logger.info("Entering the request to Serve the Image on the Server : {}");
+
+        UserDto user = this.userService.getUserById(userId);
+        logger.info("User image name : {} ", user.getImageName());
+
+        InputStream resource = fileService.getResource(imageUploadPath, user.getImageName());
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(resource, response.getOutputStream());
+
+        logger.info("Completed the request after Serving the Image on the Server : {}");
+
     }
 
 

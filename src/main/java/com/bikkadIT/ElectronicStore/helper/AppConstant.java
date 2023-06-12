@@ -4,7 +4,7 @@ public class AppConstant {
 
     public static final String USER_DELETE = "User Delete Successfully!!";
 
-    public static final String NOT_FOUND = "User is not found on server!!";
+    public static final String NOT_FOUND = "Data not found on server!!";
 
     public static final String PAGE_NUMBER = "0";
 
