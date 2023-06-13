@@ -1,9 +1,7 @@
 package com.bikkadIT.ElectronicStore.services.Impl;
 
 import com.bikkadIT.ElectronicStore.dtos.CategoryDto;
-import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.entities.Category;
-import com.bikkadIT.ElectronicStore.entities.User;
 import com.bikkadIT.ElectronicStore.exceptions.ResourceNotFoundException;
 import com.bikkadIT.ElectronicStore.helper.AppConstant;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;

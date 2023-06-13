@@ -42,7 +42,6 @@ public class UserController {
      * @Author Manish Upare
      * @param userDto
      * @apiNote This method is for Creating User
-     * @return
      */
 
     Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -69,7 +68,8 @@ public class UserController {
 
     //update
     @PutMapping("/update/{userId}")
-    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable String userId) {
+    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto,
+                                              @PathVariable String userId) {
 
         logger.info("Entering the request for update user details with userId:{}", userId);
         UserDto userDto1 = userService.updateUser(userDto, userId);
@@ -102,8 +102,12 @@ public class UserController {
     }
 
     /**
-     * @return
      * @apiNote ThiS method is for Getting All User
+     * @param pageNumber
+     * @param pageSize
+     * @param sortBy
+     * @param sortDir
+     * @return
      */
 
     //getAllUser
@@ -170,15 +174,14 @@ public class UserController {
     }
 
     /**
-     * @apiNote This method is for uploading User Image
      * @param image
      * @param userId
      * @return
      * @throws IOException
+     * @apiNote This method is for uploading User Image
      */
 
     // upload User image
-
     @PostMapping("/imageUpload/{userId}")
     public ResponseEntity<ImageResponse> uploadUserImage(@RequestPart("userImage") MultipartFile image,
                                                          @PathVariable String userId) throws IOException {
@@ -201,14 +204,13 @@ public class UserController {
     }
 
     /**
-     * @apiNote This method is for getting User Image
      * @param userId
      * @param response
      * @throws IOException
+     * @apiNote This method is for getting User Image
      */
 
     // serve user image
-
     @GetMapping(value = "/user/image/{userId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public void serveUserImage(@PathVariable String userId, HttpServletResponse response)
             throws IOException {

@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto extends CustomFieldsDto {
+public class UserDto {
 
     private String userId;
 
