@@ -1,17 +1,24 @@
 package com.bikkadIT.ElectronicStore.controller;
 
 import com.bikkadIT.ElectronicStore.dtos.CategoryDto;
+import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.helper.AppConstant;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.payloads.ApiResponse;
+import com.bikkadIT.ElectronicStore.payloads.ImageResponse;
 import com.bikkadIT.ElectronicStore.services.CategoryService;
+import com.bikkadIT.ElectronicStore.services.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/category")
@@ -19,6 +26,13 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private FileService fileService;
+
+    @Value("${user.profile.image.path}")
+    private String imageUploadPath;
+
 
     Logger logger = LoggerFactory.getLogger(CategoryController.class);
 
@@ -123,6 +137,34 @@ public class CategoryController {
         logger.info("Entering the request for get single user details with userId:{}", categoryId);
         CategoryDto singleCategoryById = categoryService.getSingleCategory(categoryId);
         return new ResponseEntity<CategoryDto>(singleCategoryById,HttpStatus.OK);
+    }
+
+    // upload Category image
+    @PostMapping("/imageUpload/{categoryId}")
+    public ResponseEntity<ImageResponse> uploadCategoryImage(@RequestPart("coverImage") MultipartFile image,
+                                                         @PathVariable String categoryId) throws IOException {
+
+        logger.info("Entering the request to Upload Image in the Category with Category ID: {} ", categoryId);
+
+        CategoryDto category = categoryService.getSingleCategory(categoryId);
+        String imageName = fileService.uploadFile(image, imageUploadPath);
+
+        category.setCoverImage(imageName);
+
+        CategoryDto categoryDto = categoryService.updateCategory(category, categoryId);
+
+        ImageResponse imageResponse = ImageResponse
+                .builder()
+                .imageName(imageName)
+                .message("Category Image Upload Successfully !!")
+                .success(true)
+                .status(HttpStatus.CREATED)
+                .build();
+
+        logger.info("Completed the request of Uploading Image in the Category with Category ID: {} ", categoryId);
+
+        return new ResponseEntity<ImageResponse>(imageResponse, HttpStatus.CREATED);
+
     }
 
 }

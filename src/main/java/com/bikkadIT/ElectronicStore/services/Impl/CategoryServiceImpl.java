@@ -18,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
@@ -33,6 +35,11 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto createCategory(CategoryDto categoryDto) {
 
         logger.info("Initiating Category Service for the save category details");
+
+        // creating categoryId randomly
+
+        String categoryID = UUID.randomUUID().toString();
+        categoryDto.setCategoryId(categoryID);
 
         Category category = mapper.map(categoryDto, Category.class);
         Category saveCategory = categoryRepository.save(category);
