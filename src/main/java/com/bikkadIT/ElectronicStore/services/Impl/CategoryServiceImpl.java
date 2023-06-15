@@ -12,12 +12,18 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
@@ -28,6 +34,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Value("${user.profile.image.path}")
+    private String imagePath;
+
 
     Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
@@ -73,11 +83,23 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + categoryId));
 
+        //  delete Category profile image
+        //  images/category/abc.png  -->fullPath
+
+        String fullPath = imagePath + category.getCoverImage();
+
+        try {
+            Path path = Paths.get(fullPath);
+            Files.delete(path);
+        } catch (NoSuchFileException ex) {
+            logger.info("Category cover Image not Found in folder");
+            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         logger.info("Completed Category Service call for the delete the user details with:{}", categoryId);
-
         categoryRepository.delete(category);
-
-
     }
 
     @Override
