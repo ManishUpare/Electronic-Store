@@ -215,7 +215,7 @@ public class UserController {
     public void serveUserImage(@PathVariable String userId, HttpServletResponse response)
             throws IOException {
 
-        logger.info("Entering the request to Serve the Image on the Server : {}");
+        logger.info("Entering the request to Serve the Image on the Server : {}",userId);
 
         UserDto user = this.userService.getUserById(userId);
         logger.info("User image name : {} ", user.getImageName());
@@ -224,7 +224,7 @@ public class UserController {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource, response.getOutputStream());
 
-        logger.info("Completed the request after Serving the Image on the Server : {}");
+        logger.info("Completed the request after Serving the Image on the Server : {}",userId);
 
     }
 

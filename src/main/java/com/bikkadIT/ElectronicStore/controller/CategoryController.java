@@ -178,6 +178,12 @@ public class CategoryController {
 
     }
 
+    /**
+     * @apiNote This method is for download image
+     * @param categoryId
+     * @param response
+     * @throws IOException
+     */
     // serve Category image
     @GetMapping(value = "/image/{categoryId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public void serveCategoryImage(@PathVariable String categoryId, HttpServletResponse response)
@@ -187,7 +193,7 @@ public class CategoryController {
 
         CategoryDto category = categoryService.getSingleCategory(categoryId);
 
-        logger.info("User image name : {} ", category.getCoverImage());
+        logger.info("Category cover image name : {} ", category.getCoverImage());
 
         InputStream resource = fileService.getResource(imageUploadPath, category.getCoverImage());
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
