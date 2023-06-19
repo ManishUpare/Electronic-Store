@@ -21,6 +21,6 @@ public class ProductDto {
     private Integer discountedPrice;
     private Integer quantity;
     private Date addedDate;
-    private Boolean live;
-    private Boolean stock;
+    private Boolean isLive;
+    private Boolean isStock;
 }
