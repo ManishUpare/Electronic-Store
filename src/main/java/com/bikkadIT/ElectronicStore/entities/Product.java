@@ -20,16 +20,15 @@ public class Product {
 
     @Id
     private String productId;
-
     private String title;
-
     @Column(length = 10000)
     private String description;
     private Integer price;
     private Integer discountedPrice;
     private Integer quantity;
     private Date addedDate;
-    private Boolean isLive;
-    private Boolean isStock;
+    private boolean live;
+    private boolean stock;
+    private String productImageName;
 
 }

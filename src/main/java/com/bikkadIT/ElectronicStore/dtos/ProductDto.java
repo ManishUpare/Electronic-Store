@@ -13,14 +13,14 @@ import java.util.Date;
 public class ProductDto {
 
     private String productId;
-
     private String title;
-
     private String description;
     private Integer price;
     private Integer discountedPrice;
     private Integer quantity;
     private Date addedDate;
-    private Boolean isLive;
-    private Boolean isStock;
+    private boolean live;
+    private boolean stock;
+    private String productImageName;
+
 }
