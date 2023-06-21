@@ -34,7 +34,7 @@ public class ProductController {
     @Autowired
     private FileService fileService;
 
-    @Value("${category.profile.image.path}")     //set KEY path from application.properties
+    @Value("${product.image.path}")     //set KEY path from application.properties
     private String imageUploadPath;
 
     /**
