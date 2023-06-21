@@ -17,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -33,6 +35,13 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto createProduct(ProductDto productDto) {
         log.info("Initiating dao call for the save product details");
         Product product = mapper.map(productDto, Product.class);
+
+        //generating random ID
+        String Id = UUID.randomUUID().toString();
+        product.setProductId(Id);
+
+        //Added date
+        product.setAddedDate(new Date());
         Product saveProduct = productRepository.save(product);
         log.info("Completed dao call for the save product details");
         return mapper.map(saveProduct, ProductDto.class);
@@ -51,8 +60,8 @@ public class ProductServiceImpl implements ProductService {
         newProduct.setPrice(productDto.getPrice());
         newProduct.setDiscountedPrice(productDto.getDiscountedPrice());
         newProduct.setQuantity(productDto.getQuantity());
-        newProduct.setIsStock(productDto.getIsStock());
-        newProduct.setIsLive(productDto.getIsLive());
+        newProduct.setLive(productDto.isLive());
+        newProduct.setStock(productDto.isStock());
 
         Product updatedProduct = productRepository.save(newProduct);
 
@@ -104,9 +113,10 @@ public class ProductServiceImpl implements ProductService {
         log.info("Initiating dao call for the get all live product details");
         Sort sort= (sortDir.equalsIgnoreCase("asc"))?(Sort.by(sortBy).ascending()):(Sort.by(sortBy).descending());
         Pageable pageable= PageRequest.of(pageNumber,pageSize,sort);
-        Page<Product> page = productRepository.findByLiveTrue(pageable);
+       // Page<Product> page = productRepository.findByLiveTrue(pageable);
+        Page<Product> live = productRepository.findByLiveTrue(pageable);
         log.info("Completed dao call for the get all live product details");
-        return PageHelper.getPageResponse(page, ProductDto.class);
+        return PageHelper.getPageResponse(live, ProductDto.class);
     }
 
     @Override

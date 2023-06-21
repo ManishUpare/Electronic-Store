@@ -35,7 +35,7 @@ public class UserController {
     @Autowired
     private FileService fileService;
 
-    @Value("${user.profile.image.path}")
+    @Value("${user.profile.image.path}")   //set KEY path from application.properties
     private String imageUploadPath;
 
     /**

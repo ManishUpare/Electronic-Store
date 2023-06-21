@@ -34,7 +34,7 @@ public class CategoryController {
     @Autowired
     private FileService fileService;
 
-    @Value("${user.profile.image.path}")
+    @Value("${product.image.path}")    //set KEY path from application.properties
     private String imageUploadPath;
 
 
