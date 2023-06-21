@@ -11,12 +11,18 @@ import com.bikkadIT.ElectronicStore.services.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +36,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Value("${product.image.path}")
+    private String imagePath;
+
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
@@ -75,6 +85,21 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(String productId) {
         log.info("Initiating dao call for the delete the product details with:{}", productId);
         Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + productId));
+
+        //  delete product image
+        //  images/product/abc.png  -->fullPath
+
+        String fullPath = imagePath + product.getProductImageName();
+
+        try {
+            Path path = Paths.get(fullPath);
+            Files.delete(path);
+        } catch (NoSuchFileException ex) {
+            log.info("Product Image not Found in folder");
+            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         log.info("Completing dao call for the delete the product details with:{}", productId);
         productRepository.delete(product);
     }
