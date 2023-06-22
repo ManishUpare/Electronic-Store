@@ -1,11 +1,13 @@
 package com.bikkadIT.ElectronicStore.services.Impl;
 
 import com.bikkadIT.ElectronicStore.dtos.ProductDto;
+import com.bikkadIT.ElectronicStore.entities.Category;
 import com.bikkadIT.ElectronicStore.entities.Product;
 import com.bikkadIT.ElectronicStore.exceptions.ResourceNotFoundException;
 import com.bikkadIT.ElectronicStore.helper.AppConstant;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.payloads.PageHelper;
+import com.bikkadIT.ElectronicStore.repositories.CategoryRepository;
 import com.bikkadIT.ElectronicStore.repositories.ProductRepository;
 import com.bikkadIT.ElectronicStore.services.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Value("${product.image.path}")
     private String imagePath;
@@ -155,5 +160,23 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> page = productRepository.findByTitleContaining(subTitle,pageable);
         log.info("Completed dao call for the get the product details with:{}", subTitle);
         return PageHelper.getPageResponse(page, ProductDto.class);
+    }
+
+    @Override
+    public ProductDto createWithCategory(ProductDto productDto, String categoryId) {
+
+        //first fetch category from DB
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + categoryId));
+
+        Product product = mapper.map(productDto, Product.class);
+        //product Id
+        String productId = UUID.randomUUID().toString();
+        product.setProductId(productId);
+
+        product.setAddedDate(new Date());
+        product.setCategory(category);
+
+        Product saveProduct = productRepository.save(product);
+        return mapper.map(saveProduct,ProductDto.class);
     }
 }
