@@ -162,7 +162,7 @@ public class ProductServiceImpl implements ProductService {
         return PageHelper.getPageResponse(page, ProductDto.class);
     }
 
-    @Override
+    @Override       //controller created in category
     public ProductDto createWithCategory(ProductDto productDto, String categoryId) {
 
         //first fetch category from DB

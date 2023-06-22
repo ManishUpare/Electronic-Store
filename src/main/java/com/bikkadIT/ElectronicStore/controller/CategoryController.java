@@ -1,6 +1,7 @@
 package com.bikkadIT.ElectronicStore.controller;
 
 import com.bikkadIT.ElectronicStore.dtos.CategoryDto;
+import com.bikkadIT.ElectronicStore.dtos.ProductDto;
 import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.helper.AppConstant;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
@@ -8,6 +9,7 @@ import com.bikkadIT.ElectronicStore.payloads.ApiResponse;
 import com.bikkadIT.ElectronicStore.payloads.ImageResponse;
 import com.bikkadIT.ElectronicStore.services.CategoryService;
 import com.bikkadIT.ElectronicStore.services.FileService;
+import com.bikkadIT.ElectronicStore.services.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class CategoryController {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private ProductService productService;
 
     @Value("${product.image.path}")    //set KEY path from application.properties
     private String imageUploadPath;
@@ -200,6 +205,19 @@ public class CategoryController {
         StreamUtils.copy(resource, response.getOutputStream());
 
         logger.info("Completed the Category request after Serving the Cover Image on the Server : {}",categoryId);
+
+    }
+
+    //create product with category
+
+    @PostMapping("/{categoryId}/products")
+    public ResponseEntity<ProductDto> createProductWithCategory(@PathVariable("categoryId") String categoryId,
+                                                                @RequestBody ProductDto productDto){
+
+        ProductDto productWithCategory = productService.createWithCategory(productDto, categoryId);
+
+        return new ResponseEntity<ProductDto>(productWithCategory,HttpStatus.CREATED);
+
 
     }
 
