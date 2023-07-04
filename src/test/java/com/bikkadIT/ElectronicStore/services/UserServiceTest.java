@@ -169,10 +169,43 @@ public class UserServiceTest {
         UserDto userdto = userService.getUserByEmail(email);
 
         Assertions.assertNotNull(userdto);
-        Assertions.assertEquals(user.getEmail(),userdto.getEmail());
+        Assertions.assertEquals(user.getEmail(),userdto.getEmail(),"Email not matched");
 
         System.out.println(userdto.getEmail());
         System.out.println(user.getEmail());
+    }
+
+    @Test
+    public void searchUserTest(){
+
+        User user1 = User.builder()
+                .name("Harshal")
+                .email("mn@gmail.com")
+                .about("This is create user testing")
+                .gender("Male")
+                .imageName("m.png")
+                .password("abcd")
+                .build();
+
+        User user2 = User.builder()
+                .name("Pavan")
+                .email("mn@gmail.com")
+                .about("This is create user testing")
+                .gender("Male")
+                .imageName("m.png")
+                .password("abcd")
+                .build();
+
+        List<User> users=Arrays.asList(user1,user2);
+
+        String keyword="manish";
+
+        Mockito.when(userRepository.findByNameContaining(keyword)).thenReturn(users);
+
+        List<UserDto> usersDto = userService.searchUser(keyword);
+
+        Assertions.assertNotNull(usersDto);
+        Assertions.assertEquals(2,users.size(),"Size not matched");
 
 
     }
