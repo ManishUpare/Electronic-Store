@@ -2,6 +2,7 @@ package com.bikkadIT.ElectronicStore.services;
 
 import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.entities.User;
+import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -98,6 +104,38 @@ public class UserServiceTest {
         Mockito.verify(userRepository,Mockito.times(1)).delete(user);
         //return me void mil raha h esliye hamne Mockito.verify karne k liye userRepository delete(user) method execute ho raha h
         // actual me image honi chahiye otherwise NosuchFileException ayega
+
+    }
+
+    @Test
+    public void getAllUserTest(){
+
+     User user1 = User.builder()
+                .name("Rudra")
+                .email("mn@gmail.com")
+                .about("This is create user testing")
+                .gender("Male")
+                .imageName("m.png")
+                .password("abcd")
+                .build();
+
+      User user2 = User.builder()
+                .name("Bhavesh")
+                .email("mn@gmail.com")
+                .about("This is create user testing")
+                .gender("Male")
+                .imageName("m.png")
+                .password("abcd")
+                .build();
+
+
+        List<User> userList= Arrays.asList(user,user1,user2);
+        Page<User> page=new PageImpl<>(userList);
+        Mockito.when(userRepository.findAll((Pageable) Mockito.any())).thenReturn(page);
+
+        PageableResponse<UserDto> allUser = userService.getAllUser(1, 1, "name", "asc");
+        Assertions.assertEquals(3,allUser.getContent().size());
+
 
     }
 }
