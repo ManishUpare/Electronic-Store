@@ -154,6 +154,27 @@ public class UserServiceTest {
         Assertions.assertEquals(user.getName(),userDto.getName(),"Name not matched");
                             //expected result,  actual result   ,   if not match then message
 
+        System.out.println(userDto.getName()); //expected
+        System.out.println(user.getName()); //actual
+
+
+    }
+    @Test
+    public void getUserByEmailTest(){
+
+        String email="m@g.com";
+
+        Mockito.when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        UserDto userdto = userService.getUserByEmail(email);
+
+        Assertions.assertNotNull(userdto);
+        Assertions.assertEquals(user.getEmail(),userdto.getEmail());
+
+        System.out.println(userdto.getEmail());
+        System.out.println(user.getEmail());
+
+
     }
 
 
