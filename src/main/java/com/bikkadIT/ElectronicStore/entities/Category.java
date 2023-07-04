@@ -29,7 +29,7 @@ public class Category {
 
     private String coverImage;
 
-    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,fetch = FetchType.LAZY)  //fetching the data, only when it is needed
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,fetch = FetchType.LAZY)  //Lazy --> fetching the data, only when it is needed
     private List<Product> products=new ArrayList<>();
 
 }

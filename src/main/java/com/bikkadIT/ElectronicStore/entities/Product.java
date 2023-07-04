@@ -21,7 +21,6 @@ public class Product {
     @Id
     private String productId;
     private String title;
-    @Column(length = 10000)
     private String description;
     private Integer price;
     private Integer discountedPrice;
