@@ -1,6 +1,7 @@
 package com.bikkadIT.ElectronicStore.services;
 
 import com.bikkadIT.ElectronicStore.dtos.ProductDto;
+import com.bikkadIT.ElectronicStore.entities.Category;
 import com.bikkadIT.ElectronicStore.entities.Product;
 import com.bikkadIT.ElectronicStore.entities.User;
 import com.bikkadIT.ElectronicStore.repositories.ProductRepository;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Date;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
@@ -52,16 +54,46 @@ class ProductServiceTest {
 
         Mockito.when(productRepository.save(Mockito.any())).thenReturn(product);
 
+        //actual result
         ProductDto productDto = productService.createProduct(mapper.map(product, ProductDto.class));
 
         System.out.println(productDto.getTitle());
+        System.out.println(productDto.getAddedDate());
+
         Assertions.assertNotNull(productDto);
         Assertions.assertEquals("Iphone 11",productDto.getTitle());
 
     }
 
     @Test
-    void updateProduct() {
+    void updateProductTest() {
+
+        String productId="product";
+
+        ProductDto productDto=ProductDto.builder()
+                .title("Samsung s22")
+                .price(50000)
+                .discountedPrice(45000)
+                .quantity(25)
+                .stock(true)
+                .live(true)
+                .description("Phone with 6gb Ram 128Gb internal")
+                .addedDate(new Date())
+                .build();
+
+        Mockito.when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        Mockito.when(productRepository.save(Mockito.any())).thenReturn(product);
+
+        ProductDto updatedProduct = productService.updateProduct(productDto, productId);
+
+        System.out.println(updatedProduct.getTitle());
+        System.out.println(updatedProduct.getDescription());
+
+        Assertions.assertNotNull(productDto);
+
+        Assertions.assertEquals(updatedProduct.getTitle(),product.getTitle(),"Title not matched");
+
+
     }
 
     @Test

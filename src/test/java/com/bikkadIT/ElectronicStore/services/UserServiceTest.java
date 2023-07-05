@@ -25,7 +25,7 @@ import java.util.Optional;
 @SpringBootTest
 public class UserServiceTest {
 
-    @MockBean
+    @MockBean //actual DB call nahi kar sakte
     private UserRepository userRepository;
 
     @Autowired
@@ -56,6 +56,7 @@ public class UserServiceTest {
 
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(user);
 
+        //actual result
         UserDto user1 = userService.createUser(mapper.map(user, UserDto.class));
 
         System.out.println(user1.getName());
