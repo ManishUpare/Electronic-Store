@@ -112,7 +112,18 @@ class ProductServiceTest {
     }
 
     @Test
-    void getSingleProduct() {
+    void getSingleProductTest() {
+        String id="pro";
+
+        Mockito.when(productRepository.findById(id)).thenReturn(Optional.of(product));
+
+        ProductDto singleProduct = productService.getSingleProduct(id);
+
+        System.out.println(singleProduct.getTitle());
+
+        Assertions.assertNotNull(singleProduct);
+        Assertions.assertEquals(singleProduct.getPrice(),product.getPrice(),"Price does not Matched");
+
     }
 
     @Test
