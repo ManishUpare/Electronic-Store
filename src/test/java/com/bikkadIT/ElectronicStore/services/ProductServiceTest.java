@@ -97,7 +97,18 @@ class ProductServiceTest {
     }
 
     @Test
-    void deleteProduct() {
+    void deleteProductTest() {
+
+        String pId="productId";
+
+        Mockito.when(productRepository.findById(pId)).thenReturn(Optional.of(product));
+
+        productService.deleteProduct(pId);
+
+        Mockito.verify(productRepository, Mockito.times(1)).delete(product);
+        //return me void mil raha h esliye hamne Mockito.verify karne k liye productRepository delete(user) method execute ho raha h
+        // actual me image honi chahiye otherwise NosuchFileException ayega
+
     }
 
     @Test
