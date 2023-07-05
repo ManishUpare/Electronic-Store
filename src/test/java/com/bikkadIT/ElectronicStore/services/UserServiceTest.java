@@ -28,8 +28,8 @@ public class UserServiceTest {
     @MockBean
     private UserRepository userRepository;
 
-   @Autowired
-    private UserService userService;   //userService k andar jo repository h usko @MockBean Karna padta h for getting fake data..not actual
+    @Autowired
+    private UserService userService;   //userService k andar jo repository h usko @MockBean Karna padta h i.e. (userRepository) for getting fake data..not actual
 
     @Autowired
     private ModelMapper mapper;
@@ -61,17 +61,17 @@ public class UserServiceTest {
         System.out.println(user1.getName());
 
         Assertions.assertNotNull(user1);
-        Assertions.assertEquals("Manish",user1.getName());
+        Assertions.assertEquals("Manish", user1.getName());
     }
 
     // update user
 
     @Test
-    public void updateUserTest(){
+    public void updateUserTest() {
 
-        String userId="dcdfvrffv";
+        String userId = "dcdfvrffv";
 
-       UserDto userDto= UserDto.builder()
+        UserDto userDto = UserDto.builder()
                 .name("Manohar")
                 .about("This is update user testing")
                 .gender("Male")
@@ -88,29 +88,31 @@ public class UserServiceTest {
         System.out.println(updateUser.getImageName());
 
         Assertions.assertNotNull(userDto);
-        Assertions.assertEquals(userDto.getName(),updateUser.getName(),"Name is not validated");
+        Assertions.assertEquals(userDto.getName(), updateUser.getName(), "Name is not validated");
 
     }
 
+    // delete user
     @Test
-    public void deleteUserTest(){
+    public void deleteUserTest() {
 
-        String userId="userAbc";
+        String userId = "userAbc";
 
         Mockito.when(userRepository.findById("userAbc")).thenReturn(Optional.of(user));
 
         userService.deleteUser(userId);
 
-        Mockito.verify(userRepository,Mockito.times(1)).delete(user);
+        Mockito.verify(userRepository, Mockito.times(1)).delete(user);
         //return me void mil raha h esliye hamne Mockito.verify karne k liye userRepository delete(user) method execute ho raha h
         // actual me image honi chahiye otherwise NosuchFileException ayega
 
     }
 
+    // get All user
     @Test
-    public void getAllUserTest(){
+    public void getAllUserTest() {
 
-     User user1 = User.builder()
+        User user1 = User.builder()
                 .name("Rudra")
                 .email("mn@gmail.com")
                 .about("This is create user testing")
@@ -119,7 +121,7 @@ public class UserServiceTest {
                 .password("abcd")
                 .build();
 
-      User user2 = User.builder()
+        User user2 = User.builder()
                 .name("Bhavesh")
                 .email("mn@gmail.com")
                 .about("This is create user testing")
@@ -129,54 +131,59 @@ public class UserServiceTest {
                 .build();
 
 
-        List<User> userList= Arrays.asList(user,user1,user2);
+        List<User> userList = Arrays.asList(user, user1, user2);
 
-        Page<User> page=new PageImpl<>(userList);
+        Page<User> page = new PageImpl<>(userList);
 
         Mockito.when(userRepository.findAll((Pageable) Mockito.any())).thenReturn(page);
 
         PageableResponse<UserDto> allUser = userService.getAllUser(1, 1, "name", "asc");
 
-        Assertions.assertEquals(3,allUser.getContent().size());
+        Assertions.assertEquals(3, allUser.getContent().size());
     }
 
 
+    // get user by id
     @Test
-    public void getUserByIdTest(){
+    public void getUserByIdTest() {
 
-        String userID="userID";
+        String userID = "userID";
         Mockito.when(userRepository.findById(userID)).thenReturn(Optional.of(user));
 
         //actual call of service method
         UserDto userDto = userService.getUserById(userID);
 
         Assertions.assertNotNull(userDto);
-        Assertions.assertEquals(user.getName(),userDto.getName(),"Name not matched");
-                            //expected result,  actual result   ,   if not match then message
+        Assertions.assertEquals(user.getName(), userDto.getName(), "Name not matched");
+        //expected result,  actual result   ,   if not match then message
 
         System.out.println(userDto.getName()); //expected
         System.out.println(user.getName()); //actual
 
 
     }
-    @Test
-    public void getUserByEmailTest(){
 
-        String email="m@g.com";
+    // get user by email
+
+    @Test
+    public void getUserByEmailTest() {
+
+        String email = "m@g.com";
 
         Mockito.when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         UserDto userdto = userService.getUserByEmail(email);
 
         Assertions.assertNotNull(userdto);
-        Assertions.assertEquals(user.getEmail(),userdto.getEmail(),"Email not matched");
+        Assertions.assertEquals(user.getEmail(), userdto.getEmail(), "Email not matched");
 
         System.out.println(userdto.getEmail());
         System.out.println(user.getEmail());
     }
 
+    // search user by keyword
     @Test
-    public void searchUserTest(){
+    public void searchUserTest() {
 
         User user1 = User.builder()
                 .name("Harshal")
@@ -196,16 +203,16 @@ public class UserServiceTest {
                 .password("abcd")
                 .build();
 
-        List<User> users=Arrays.asList(user1,user2);
+        List<User> users = Arrays.asList(user1, user2);
 
-        String keyword="manish";
+        String keyword = "manish";
 
         Mockito.when(userRepository.findByNameContaining(keyword)).thenReturn(users);
 
         List<UserDto> usersDto = userService.searchUser(keyword);
 
         Assertions.assertNotNull(usersDto);
-        Assertions.assertEquals(2,users.size(),"Size not matched");
+        Assertions.assertEquals(2, users.size(), "Size not matched");
 
 
     }
