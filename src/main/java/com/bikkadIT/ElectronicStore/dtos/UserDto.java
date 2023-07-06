@@ -20,7 +20,7 @@ public class UserDto {
 
     private String userId;
 
-    @Size(min = 3, max = 15, message = "Invalid Name !!")
+    @Size(min = 3, message = "Invalid Name !!")
     private String name;
 
     //@Email(message = "Invalid User Email !!")

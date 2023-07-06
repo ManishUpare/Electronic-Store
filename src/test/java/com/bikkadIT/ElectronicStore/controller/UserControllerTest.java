@@ -12,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import javax.print.attribute.standard.Media;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,15 +53,15 @@ class UserControllerTest {
 
     @Test
     void createUserTest() throws Exception {
-        // URL -->  /user + POST+ user data as Json
-        //   return data as Json+status creted
+        // URL -->  /users/create + POST request + user data as Json
+        //   return data as Json+status created
 
         UserDto dto = mapper.map(user, UserDto.class);
 
 //   when we call createUser on userService with any object then return dto      controller kbhibhi service ko hi call karta h
         Mockito.when(userService.createUser(Mockito.any())).thenReturn(dto);
 
-        //URL request karne k liye Mockmvc it has methods for performing operations
+        //URL request karne k liye Mockmvc, it has methods for performing operations
         //actual request for URL
 
         mockMvc.perform(
@@ -72,6 +75,28 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name").exists()); //data property exist with name or not
 
     }
+    @Test
+    void updateUser() throws Exception {
+        // URL -->  /users/update/{userId} + PUT request + user data as Json
+        //   return data as Json+status creted
+
+        String userId="123";
+
+        UserDto dto = mapper.map(user, UserDto.class);
+
+        Mockito.when(userService.updateUser(Mockito.any(),Mockito.anyString())).thenReturn(dto);
+        //Mockito.when(userService.updateUser(dto,userId)).thenReturn(dto);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/users/update"+userId)
+                      //  .header(HttpHeaders.AUTHORIZATION,"Bearer token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(user))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").exists());
+
+    }
 
     private String convertObjectToJsonString(Object user) {
         try {
@@ -82,9 +107,7 @@ class UserControllerTest {
         }
     }
 
-    @Test
-    void updateUser() {
-    }
+
 
     @Test
     void deleteUser() {
