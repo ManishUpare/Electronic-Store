@@ -143,7 +143,7 @@ class UserControllerTest {
     void deleteUserTest() throws Exception {
 
         String userId = "123";
-      //  Mockito.when(userService.deleteUser(userId);
+        //Mockito.when(userService.deleteUser(userId));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/delete/" + userId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -153,7 +153,23 @@ class UserControllerTest {
     }
 
 
+    @Test
+    void getUserByIdTest() throws Exception {
 
+        String userId = "123";
+
+        UserDto dto = mapper.map(user, UserDto.class);
+
+        Mockito.when(userService.getUserById(userId)).thenReturn(dto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/getUser/" + userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(user)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").exists());
+    }
 
     @Test
     void getUserByEmail() {
