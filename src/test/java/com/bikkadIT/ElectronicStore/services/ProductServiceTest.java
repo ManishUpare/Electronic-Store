@@ -168,7 +168,38 @@ class ProductServiceTest {
     }
 
     @Test
-    void getAllLiveProduct() {
+    void getAllLiveProductTest() {
+        Product product1 = Product.builder()
+                .title("Vivo")
+                .price(20000)
+                .discountedPrice(18000)
+                .quantity(25)
+                .stock(true)
+                .live(true)
+                .description("Phone with 6gb Ram 128Gb internal")
+                .addedDate(new Date())
+                .build();
+
+        Product product2 = Product.builder()
+                .title("Oppo")
+                .price(20000)
+                .discountedPrice(18000)
+                .quantity(25)
+                .stock(true)
+                .live(true)
+                .description("Phone with 6gb Ram 128Gb internal")
+                .addedDate(new Date())
+                .build();
+
+        List<Product> list= Arrays.asList(product,product1,product2);
+
+        Page<Product> page = new PageImpl<>(list);
+
+        Mockito.when(productRepository.findByLiveTrue((Pageable) Mockito.any())).thenReturn(page);
+
+        PageableResponse<ProductDto> allLiveProduct = productService.getAllLiveProduct(1, 1, "title", "asc");
+
+        Assertions.assertEquals(3,allLiveProduct.getContent().size());
     }
 
     @Test
