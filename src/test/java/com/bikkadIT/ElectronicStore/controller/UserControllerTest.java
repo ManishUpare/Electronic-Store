@@ -3,6 +3,7 @@ package com.bikkadIT.ElectronicStore.controller;
 import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.entities.User;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
+import com.bikkadIT.ElectronicStore.payloads.ApiResponse;
 import com.bikkadIT.ElectronicStore.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -137,15 +139,21 @@ class UserControllerTest {
         }
     }
 
-
     @Test
-    void deleteUser() {
+    void deleteUserTest() throws Exception {
+
+        String userId = "123";
+      //  Mockito.when(userService.deleteUser(userId);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/delete/" + userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
 
-    @Test
-    void getUserById() {
-    }
+
 
     @Test
     void getUserByEmail() {
