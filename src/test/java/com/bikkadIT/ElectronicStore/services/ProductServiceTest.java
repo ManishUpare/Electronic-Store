@@ -4,21 +4,26 @@ import com.bikkadIT.ElectronicStore.dtos.ProductDto;
 import com.bikkadIT.ElectronicStore.entities.Category;
 import com.bikkadIT.ElectronicStore.entities.Product;
 import com.bikkadIT.ElectronicStore.entities.User;
+import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.repositories.ProductRepository;
 import com.bikkadIT.ElectronicStore.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 class ProductServiceTest {
 
@@ -34,9 +39,9 @@ class ProductServiceTest {
     Product product;
 
     @BeforeEach
-    public void init(){
+    public void init() {
 
-       product= Product.builder()
+        product = Product.builder()
                 .title("Iphone 11")
                 .price(20000)
                 .discountedPrice(18000)
@@ -61,16 +66,16 @@ class ProductServiceTest {
         System.out.println(productDto.getAddedDate());
 
         Assertions.assertNotNull(productDto);
-        Assertions.assertEquals("Iphone 11",productDto.getTitle());
+        Assertions.assertEquals("Iphone 11", productDto.getTitle());
 
     }
 
     @Test
     void updateProductTest() {
 
-        String productId="product";
+        String productId = "product";
 
-        ProductDto productDto=ProductDto.builder()
+        ProductDto productDto = ProductDto.builder()
                 .title("Samsung s22")
                 .price(50000)
                 .discountedPrice(45000)
@@ -91,7 +96,7 @@ class ProductServiceTest {
 
         Assertions.assertNotNull(productDto);
 
-        Assertions.assertEquals(updatedProduct.getTitle(),product.getTitle(),"Title not matched");
+        Assertions.assertEquals(updatedProduct.getTitle(), product.getTitle(), "Title not matched");
 
 
     }
@@ -99,7 +104,7 @@ class ProductServiceTest {
     @Test
     void deleteProductTest() {
 
-        String pId="productId";
+        String pId = "productId";
 
         Mockito.when(productRepository.findById(pId)).thenReturn(Optional.of(product));
 
@@ -113,7 +118,7 @@ class ProductServiceTest {
 
     @Test
     void getSingleProductTest() {
-        String id="pro";
+        String id = "pro";
 
         Mockito.when(productRepository.findById(id)).thenReturn(Optional.of(product));
 
@@ -122,12 +127,44 @@ class ProductServiceTest {
         System.out.println(singleProduct.getTitle());
 
         Assertions.assertNotNull(singleProduct);
-        Assertions.assertEquals(singleProduct.getPrice(),product.getPrice(),"Price does not Matched");
+        Assertions.assertEquals(singleProduct.getPrice(), product.getPrice(), "Price does not Matched");
 
     }
 
     @Test
-    void getAllProduct() {
+    void getAllProductTest() {
+
+        Product product1 = Product.builder()
+                .title("Vivo")
+                .price(20000)
+                .discountedPrice(18000)
+                .quantity(25)
+                .stock(true)
+                .live(true)
+                .description("Phone with 6gb Ram 128Gb internal")
+                .addedDate(new Date())
+                .build();
+
+        Product product2 = Product.builder()
+                .title("Oppo")
+                .price(20000)
+                .discountedPrice(18000)
+                .quantity(25)
+                .stock(true)
+                .live(true)
+                .description("Phone with 6gb Ram 128Gb internal")
+                .addedDate(new Date())
+                .build();
+
+        List<Product> list= Arrays.asList(product,product1,product2);
+
+        Page<Product> page = new PageImpl<>(list);
+
+        Mockito.when(productRepository.findAll((Pageable) Mockito.any())).thenReturn(page);
+
+        PageableResponse<ProductDto> allProduct = productService.getAllProduct(1, 1, "title", "asc");
+
+        Assertions.assertEquals(3,allProduct.getContent().size());
     }
 
     @Test
