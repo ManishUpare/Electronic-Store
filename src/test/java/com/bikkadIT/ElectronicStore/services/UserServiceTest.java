@@ -98,14 +98,15 @@ public class UserServiceTest {
     public void deleteUserTest() {
 
         String userId = "userAbc";
-
         Mockito.when(userRepository.findById("userAbc")).thenReturn(Optional.of(user));
-
         userService.deleteUser(userId);
-
         Mockito.verify(userRepository, Mockito.times(1)).delete(user);
         //return me void mil raha h esliye hamne Mockito.verify karne k liye userRepository delete(user) method execute ho raha h
         // actual me image honi chahiye otherwise NosuchFileException ayega
+
+
+
+
 
     }
 

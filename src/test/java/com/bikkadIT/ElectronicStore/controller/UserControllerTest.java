@@ -4,6 +4,7 @@ import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.entities.User;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.payloads.ApiResponse;
+import com.bikkadIT.ElectronicStore.services.FileService;
 import com.bikkadIT.ElectronicStore.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.print.attribute.standard.Media;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +37,9 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    FileService fileService;
 
     @Autowired
     private ModelMapper mapper;
@@ -144,13 +149,16 @@ class UserControllerTest {
     void deleteUserTest() throws Exception {
 
         String userId = "123";
-        //Mockito.when(userService.deleteUser(userId));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/delete/" + userId)
+        Mockito.doNothing().when(userService).deleteUser(userId);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/delete/" + userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        Mockito.verify(userService,Mockito.times(1)).deleteUser(userId);
     }
 
 
@@ -199,25 +207,18 @@ class UserControllerTest {
         UserDto u3 = UserDto.builder().name("munna").email("munna@gmail.com").password("abcd").gender("Male").about("Tester").build();
         UserDto u4 = UserDto.builder().name("khilesh").email("khilesh@gmail.com").password("abcd").gender("Male").about("Tester").build();
 
-        List<UserDto> list=Arrays.asList(u1,u2,u3,u4);
+        List<UserDto> list = Arrays.asList(u1, u2, u3, u4);
 
-        String keyword="123";
+        String keyword = "123";
 
         Mockito.when(userService.searchUser(keyword)).thenReturn(list);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/searchKeyword/"+keyword)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(convertObjectToJsonString(user)))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/searchKeyword/" + keyword)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(user)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void uploadUserImage() {
-    }
-
-    @Test
-    void serveUserImage() {
-    }
 }
