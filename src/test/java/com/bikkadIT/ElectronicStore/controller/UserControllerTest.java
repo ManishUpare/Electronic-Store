@@ -2,6 +2,7 @@ package com.bikkadIT.ElectronicStore.controller;
 
 import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.entities.User;
+import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.print.attribute.standard.Media;
+
+import java.util.Arrays;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -75,28 +78,55 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name").exists()); //data property exist with name or not
 
     }
+
     @Test
-    void updateUser() throws Exception {
+    void updateUserTest() throws Exception {
         // URL -->  /users/update/{userId} + PUT request + user data as Json
         //   return data as Json+status creted
 
-        String userId="123";
+        String userId = "123";
 
         UserDto dto = mapper.map(user, UserDto.class);
 
-        Mockito.when(userService.updateUser(Mockito.any(),Mockito.anyString())).thenReturn(dto);
+        Mockito.when(userService.updateUser(Mockito.any(), Mockito.anyString())).thenReturn(dto);
         //Mockito.when(userService.updateUser(dto,userId)).thenReturn(dto);
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/users/update"+userId)
-                      //  .header(HttpHeaders.AUTHORIZATION,"Bearer token")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(convertObjectToJsonString(user))
-                        .accept(MediaType.APPLICATION_JSON))
+                        MockMvcRequestBuilders.put("/users/update" + userId)
+                                //  .header(HttpHeaders.AUTHORIZATION,"Bearer token")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(convertObjectToJsonString(user))
+                                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").exists());
 
     }
+
+    @Test
+    void getAllUsersTest() throws Exception {
+
+        UserDto u1 = UserDto.builder().name("sagar").email("sagar@gmail.com").password("abcd").gender("Male").about("Tester").build();
+        UserDto u2 = UserDto.builder().name("akash").email("akash@gmail.com").password("abcd").gender("Male").about("Tester").build();
+        UserDto u3 = UserDto.builder().name("munna").email("munna@gmail.com").password("abcd").gender("Male").about("Tester").build();
+        UserDto u4 = UserDto.builder().name("khilesh").email("khilesh@gmail.com").password("abcd").gender("Male").about("Tester").build();
+
+        PageableResponse<UserDto> pageableResponse = new PageableResponse<>();
+        pageableResponse.setContent(Arrays.asList(u1, u2, u3, u4));
+        pageableResponse.setLastPage(false);
+        pageableResponse.setPageSize(10);
+        pageableResponse.setTotalElements(100);
+        pageableResponse.setTotalPages(1000);
+
+        Mockito.when(userService.getAllUser(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(pageableResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/AllUser")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
 
     private String convertObjectToJsonString(Object user) {
         try {
@@ -108,14 +138,10 @@ class UserControllerTest {
     }
 
 
-
     @Test
     void deleteUser() {
     }
 
-    @Test
-    void getAllUsers() {
-    }
 
     @Test
     void getUserById() {
