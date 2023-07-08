@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import javax.print.attribute.standard.Media;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -174,16 +175,16 @@ class UserControllerTest {
     @Test
     void getUserByEmailTest() throws Exception {
 
-        String email="mail";
+        String email = "mail";
 
         UserDto dto = mapper.map(user, UserDto.class);
 
         Mockito.when(userService.getUserByEmail(email)).thenReturn(dto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/getByEmail/"+email)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(convertObjectToJsonString(user)))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/getByEmail/" + email)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(user)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").exists());
@@ -191,7 +192,25 @@ class UserControllerTest {
     }
 
     @Test
-    void searchUser() {
+    void searchUserTest() throws Exception {
+
+        UserDto u1 = UserDto.builder().name("sagar").email("sagar@gmail.com").password("abcd").gender("Male").about("Tester").build();
+        UserDto u2 = UserDto.builder().name("akash").email("akash@gmail.com").password("abcd").gender("Male").about("Tester").build();
+        UserDto u3 = UserDto.builder().name("munna").email("munna@gmail.com").password("abcd").gender("Male").about("Tester").build();
+        UserDto u4 = UserDto.builder().name("khilesh").email("khilesh@gmail.com").password("abcd").gender("Male").about("Tester").build();
+
+        List<UserDto> list=Arrays.asList(u1,u2,u3,u4);
+
+        String keyword="123";
+
+        Mockito.when(userService.searchUser(keyword)).thenReturn(list);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/searchKeyword/"+keyword)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(convertObjectToJsonString(user)))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
