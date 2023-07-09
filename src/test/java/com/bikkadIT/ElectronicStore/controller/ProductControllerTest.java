@@ -93,7 +93,23 @@ class ProductControllerTest {
 
     }
 
+    @Test
+    void deleteProductTest() throws Exception {
 
+        String productId = "234";
+
+        Mockito.doNothing().when(productService).deleteProduct(productId);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/products/delete/" + productId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(product)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        Mockito.verify(productService,Mockito.times(1)).deleteProduct(productId);
+
+    }
 
     @Test
     void getSingleProduct() {
