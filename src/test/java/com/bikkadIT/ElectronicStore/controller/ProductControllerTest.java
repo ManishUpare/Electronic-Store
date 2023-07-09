@@ -141,27 +141,51 @@ class ProductControllerTest {
         ProductDto p3 = ProductDto.builder().title("IPhone").description("This is Iphone Mobiles").price(80000).discountedPrice(79000).build();
         ProductDto p4 = ProductDto.builder().title("IPhone").description("This is Iphone Mobiles").price(80000).discountedPrice(79000).build();
 
-        List<ProductDto> list= Arrays.asList(p1,p2,p3,p4);
+        List<ProductDto> list = Arrays.asList(p1, p2, p3, p4);
 
-        PageableResponse pageableResponse=new PageableResponse();
+        PageableResponse<ProductDto> pageableResponse = new PageableResponse<>();
         pageableResponse.setContent(list);
         pageableResponse.setTotalElements(10);
         pageableResponse.setPageSize(100);
         pageableResponse.setTotalPages(1000);
 
-        Mockito.when(productService.getAllProduct(Mockito.anyInt(),Mockito.anyInt(),Mockito.anyString(),Mockito.anyString())).thenReturn(pageableResponse);
+        Mockito.when(productService.getAllProduct(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(pageableResponse);
 
 
         mockMvc.perform(MockMvcRequestBuilders.get("/products/getAllProducts")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(convertObjectToJsonString(product)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(product)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    void getLiveProducts() {
+    void getLiveProducts() throws Exception {
+
+        ProductDto p1 = ProductDto.builder().title("IPhone").description("This is Iphone Mobiles").price(80000).discountedPrice(79000).build();
+        ProductDto p2 = ProductDto.builder().title("Samsung").description("This is Samsung Mobiles").price(80000).discountedPrice(79000).build();
+        ProductDto p3 = ProductDto.builder().title("Vivo").description("This is vivo Mobiles").price(80000).discountedPrice(79000).build();
+        ProductDto p4 = ProductDto.builder().title("OPPO").description("This is oppo Mobiles").price(80000).discountedPrice(79000).build();
+
+        List<ProductDto> liveList = Arrays.asList(p1, p2, p3, p4);
+
+        PageableResponse<ProductDto> pageableResponse = new PageableResponse<>();
+        pageableResponse.setContent(liveList);
+        pageableResponse.setTotalElements(1000);
+        pageableResponse.setTotalPages(1000);
+        pageableResponse.setPageSize(50);
+        pageableResponse.setLastPage(false);
+
+        Mockito.when(productService.getAllLiveProduct(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(pageableResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/products/getAllLive")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(product)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
     }
 
     @Test
