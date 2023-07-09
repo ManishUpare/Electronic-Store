@@ -189,7 +189,34 @@ class ProductControllerTest {
     }
 
     @Test
-    void searchProducts() {
+    void searchProductsTest() throws Exception {
+
+        ProductDto p1 = ProductDto.builder().title("IPhone").description("This is Iphone Mobiles").price(80000).discountedPrice(79000).build();
+        ProductDto p2 = ProductDto.builder().title("Samsung").description("This is Samsung Mobiles").price(80000).discountedPrice(79000).build();
+        ProductDto p3 = ProductDto.builder().title("Vivo").description("This is vivo Mobiles").price(80000).discountedPrice(79000).build();
+        ProductDto p4 = ProductDto.builder().title("OPPO").description("This is oppo Mobiles").price(80000).discountedPrice(79000).build();
+
+        List<ProductDto> liveList = Arrays.asList(p1, p2, p3, p4);
+
+        PageableResponse<ProductDto> pageableResponse = new PageableResponse<>();
+        pageableResponse.setContent(liveList);
+        pageableResponse.setTotalElements(1000);
+        pageableResponse.setTotalPages(1000);
+        pageableResponse.setPageSize(50);
+        pageableResponse.setLastPage(false);
+
+        Mockito.when(productService.searchByTitle(Mockito.anyString(),Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(pageableResponse);
+
+        String query="123";
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/products/search/"+query)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(product)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+
     }
 
     @Test
