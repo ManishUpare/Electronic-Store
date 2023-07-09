@@ -3,6 +3,7 @@ package com.bikkadIT.ElectronicStore.controller;
 import com.bikkadIT.ElectronicStore.dtos.ProductDto;
 import com.bikkadIT.ElectronicStore.entities.Product;
 import com.bikkadIT.ElectronicStore.entities.User;
+import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.services.FileService;
 import com.bikkadIT.ElectronicStore.services.ProductService;
 import com.bikkadIT.ElectronicStore.services.UserService;
@@ -19,7 +20,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -131,7 +134,30 @@ class ProductControllerTest {
     }
 
     @Test
-    void getAll() {
+    void getAllTest() throws Exception {
+
+        ProductDto p1 = ProductDto.builder().title("IPhone").description("This is Iphone Mobiles").price(80000).discountedPrice(79000).build();
+        ProductDto p2 = ProductDto.builder().title("IPhone").description("This is Iphone Mobiles").price(80000).discountedPrice(79000).build();
+        ProductDto p3 = ProductDto.builder().title("IPhone").description("This is Iphone Mobiles").price(80000).discountedPrice(79000).build();
+        ProductDto p4 = ProductDto.builder().title("IPhone").description("This is Iphone Mobiles").price(80000).discountedPrice(79000).build();
+
+        List<ProductDto> list= Arrays.asList(p1,p2,p3,p4);
+
+        PageableResponse pageableResponse=new PageableResponse();
+        pageableResponse.setContent(list);
+        pageableResponse.setTotalElements(10);
+        pageableResponse.setPageSize(100);
+        pageableResponse.setTotalPages(1000);
+
+        Mockito.when(productService.getAllProduct(Mockito.anyInt(),Mockito.anyInt(),Mockito.anyString(),Mockito.anyString())).thenReturn(pageableResponse);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/products/getAllProducts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(convertObjectToJsonString(product)))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
