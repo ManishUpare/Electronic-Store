@@ -122,5 +122,18 @@ class CategoryServiceTest {
 
     }
 
+    @Test
+    void getSingleCategory_Test() {
 
+        Mockito.when(categoryRepository.findById(Mockito.anyString())).thenReturn(Optional.of(category));
+
+        CategoryDto singleCategory = categoryService.getSingleCategory(Mockito.anyString());
+
+        System.out.println(singleCategory.getTitle());
+
+        Assertions.assertNotNull(singleCategory);
+        Assertions.assertEquals(singleCategory.getTitle(), category.getTitle(), "Title does not Matched");
+
+
+    }
 }
