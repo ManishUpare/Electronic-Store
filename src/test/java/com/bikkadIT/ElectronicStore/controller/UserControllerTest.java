@@ -99,7 +99,7 @@ class UserControllerTest {
         Mockito.when(userService.updateUser(Mockito.any(), Mockito.anyString())).thenReturn(dto);
         //Mockito.when(userService.updateUser(dto,userId)).thenReturn(dto);
         mockMvc.perform(
-                        MockMvcRequestBuilders.put("/users/update" + userId)
+                        MockMvcRequestBuilders.put("/users/update/" + userId)
                                 //  .header(HttpHeaders.AUTHORIZATION,"Bearer token")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(convertObjectToJsonString(user))

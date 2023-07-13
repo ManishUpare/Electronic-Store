@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -54,7 +56,24 @@ class CategoryServiceTest {
     }
 
     @Test
-    void updateCategory() {
+    void updateCategory_Test() {
+
+        CategoryDto categoryDto=CategoryDto.builder().title("New Mobiles").description("This is categoryDto").coverImage("newMob.png").build();
+
+        Mockito.when(categoryRepository.findById(Mockito.anyString())).thenReturn(Optional.of(category));
+        Mockito.when(categoryRepository.save(Mockito.any())).thenReturn(category);
+
+        CategoryDto cDto = categoryService.updateCategory(categoryDto, Mockito.anyString());
+
+        System.out.println(cDto.getTitle());
+        System.out.println(cDto.getDescription());
+
+
+        Assertions.assertNotNull(categoryDto);
+
+        Assertions.assertEquals(cDto.getTitle(), category.getTitle(), "Title not matched");
+
+
     }
 
     @Test
