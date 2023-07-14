@@ -6,6 +6,7 @@ import com.bikkadIT.ElectronicStore.services.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +43,11 @@ class CategoryControllerTest {
     @BeforeEach
     public void init() {
 
-       category = Category.builder()
-               .title("Mobiles")
-               .description("This is Category Controller_Test")
-               .coverImage("mob.png")
-               .build();
+        category = Category.builder()
+                .title("Mobiles")
+                .description("This is Category Controller_Test")
+                .coverImage("mob.png")
+                .build();
     }
 
     @Test
@@ -60,10 +61,10 @@ class CategoryControllerTest {
         Mockito.when(categoryService.createCategory(Mockito.any())).thenReturn(dto);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/category/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(convertObjectToJsonString(category))
-                        .accept(MediaType.APPLICATION_JSON))
+                        MockMvcRequestBuilders.post("/category/create")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(convertObjectToJsonString(category))
+                                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").exists());
@@ -75,27 +76,39 @@ class CategoryControllerTest {
 
         //URL   category/update/{categoryId}
 
-        String cId="123";
+        String cId = "123";
 
         CategoryDto dto = mapper.map(category, CategoryDto.class);
 
-        Mockito.when(categoryService.updateCategory(Mockito.any(),Mockito.anyString())).thenReturn(dto);
+        Mockito.when(categoryService.updateCategory(Mockito.any(), Mockito.anyString())).thenReturn(dto);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/category/update/"+cId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(convertObjectToJsonString(category)))
+                        MockMvcRequestBuilders.put("/category/update/" + cId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(convertObjectToJsonString(category)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").exists());
-
-
-
     }
 
     @Test
-    void deleteCategory() {
+    void deleteCategory_Test() throws Exception {
+
+        //URL   /category/delete/{categoryId}
+
+        String cId = "123";
+
+        Mockito.doNothing().when(categoryService).deleteCategory(cId);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/category/delete/" + cId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(category))
+                ).andDo(print())
+                .andExpect(status().isOk());
+
+
     }
 
     @Test
