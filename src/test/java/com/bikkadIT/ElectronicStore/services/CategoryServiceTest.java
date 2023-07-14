@@ -2,7 +2,7 @@ package com.bikkadIT.ElectronicStore.services;
 
 import com.bikkadIT.ElectronicStore.dtos.CategoryDto;
 import com.bikkadIT.ElectronicStore.entities.Category;
-import com.bikkadIT.ElectronicStore.entities.Product;
+
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.repositories.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
