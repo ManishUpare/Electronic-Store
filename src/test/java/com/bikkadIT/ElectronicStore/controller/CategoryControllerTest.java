@@ -71,7 +71,27 @@ class CategoryControllerTest {
 
 
     @Test
-    void updateCategory() {
+    void updateCategory_Test() throws Exception {
+
+        //URL   category/update/{categoryId}
+
+        String cId="123";
+
+        CategoryDto dto = mapper.map(category, CategoryDto.class);
+
+        Mockito.when(categoryService.updateCategory(Mockito.any(),Mockito.anyString())).thenReturn(dto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/category/update/"+cId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(category)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").exists());
+
+
+
     }
 
     @Test
