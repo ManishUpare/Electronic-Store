@@ -1,10 +1,13 @@
 package com.bikkadIT.ElectronicStore.controller;
 
 import com.bikkadIT.ElectronicStore.dtos.CategoryDto;
+import com.bikkadIT.ElectronicStore.dtos.ProductDto;
 import com.bikkadIT.ElectronicStore.dtos.UserDto;
 import com.bikkadIT.ElectronicStore.entities.Category;
+import com.bikkadIT.ElectronicStore.entities.Product;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.services.CategoryService;
+import com.bikkadIT.ElectronicStore.services.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,9 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Arrays;
 
@@ -41,6 +49,9 @@ class CategoryControllerTest {
 
     @Autowired
     private CategoryController categoryController;
+
+    @MockBean
+    private ProductService productService;
 
     Category category;
 
@@ -159,16 +170,28 @@ class CategoryControllerTest {
     }
 
     @Test
-    void uploadCategoryImage() {
-    }
+    void createProductWithCategory_Test() throws Exception {
 
-    @Test
-    void serveCategoryImage() {
-    }
+        //URL       /category/{categoryId}/products
 
-    @Test
-    void createProductWithCategory() {
-    }
+        String cId="123";
+
+        Product product=Product.builder().title("Iphone 14").price(80000).discountedPrice(78000).live(true).stock(true).build();
+
+        ProductDto pDto = mapper.map(product, ProductDto.class);
+
+        Mockito.when(productService.createWithCategory(Mockito.any(),Mockito.anyString())).thenReturn(pDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/"+cId+"/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(convertObjectToJsonString(product))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        }
+
 
     private String convertObjectToJsonString(Object user) {
         try {
