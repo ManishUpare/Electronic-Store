@@ -119,7 +119,7 @@ public class CategoryController {
      * @return
      */
 
-    @GetMapping("/allUser")
+    @GetMapping("/allCategory")
     public ResponseEntity<PageableResponse<CategoryDto>> getAllCategory(
             @RequestParam(value = "pageNumber",defaultValue = AppConstant.PAGE_NUMBER,required = false)Integer pageNumber,
             @RequestParam(value = "pageSize",defaultValue = AppConstant.PAGE_SIZE,required = false)Integer pagSize,
