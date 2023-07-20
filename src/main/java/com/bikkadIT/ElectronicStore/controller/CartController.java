@@ -39,6 +39,24 @@ public class CartController {
         return new ResponseEntity<>(cartDto, HttpStatus.OK);
     }
 
+    /**
+     * @apiNote This method is for Remove Item from Cart
+     * @param userId
+     * @param itemId
+     * @return
+     */
+
+    @DeleteMapping("/{userId}/items/{itemId}")
+    public ResponseEntity<ApiResponse> removeItemFromCart(@PathVariable String userId,@PathVariable int itemId){
+
+        log.info("Entering the request for remove item from cart with userId:{} itemId :{}", userId,itemId);
+
+        cartService.removeItemFromCart(userId,itemId);
+        ApiResponse apiResponse = ApiResponse.builder().success(true).message("Item Removed!!").status(HttpStatus.OK).build();
+
+        log.info("Completed the request for remove item from cart with userId:{} itemId :{} ", userId,itemId);
+        return new ResponseEntity<>(apiResponse,HttpStatus.OK);
+    }
 
 
 
