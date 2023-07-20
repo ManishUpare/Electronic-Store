@@ -6,8 +6,10 @@ import com.bikkadIT.ElectronicStore.entities.Cart;
 import com.bikkadIT.ElectronicStore.entities.CartItem;
 import com.bikkadIT.ElectronicStore.entities.Product;
 import com.bikkadIT.ElectronicStore.entities.User;
+import com.bikkadIT.ElectronicStore.exceptions.BadApiException;
 import com.bikkadIT.ElectronicStore.exceptions.ResourceNotFoundException;
 import com.bikkadIT.ElectronicStore.helper.AppConstant;
+import com.bikkadIT.ElectronicStore.repositories.CartItemRepository;
 import com.bikkadIT.ElectronicStore.repositories.CartRepository;
 import com.bikkadIT.ElectronicStore.repositories.ProductRepository;
 import com.bikkadIT.ElectronicStore.repositories.UserRepository;
@@ -38,12 +40,22 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
     @Override
     public CartDto addItemToCart(String userId, AddItemToCartRequest request) {
 
         int quantity = request.getQuantity();
         String productId = request.getProductId();
+
+        if(quantity<=0){
+            throw new BadApiException("Requested quantity is not valid !!");
+        }
+
+
+
         //fetch the product
         Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + productId));
         //fetch thr user
@@ -102,10 +114,22 @@ public class CartServiceImpl implements CartService {
     @Override
     public void removeItemFromCart(String userId, int cartItem) {
 
+        CartItem cartItem1 = cartItemRepository.findById(cartItem).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + cartItem));
+        cartItemRepository.delete(cartItem1);
+
+
     }
 
     @Override
     public void clearCart(String userId) {
 
+        //fetch the user from DB
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + userId));
+
+        Cart cart = cartRepository.findByUser(user).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + user));
+
+        cart.getItem().clear();
+        cartRepository.save(cart);
     }
+
 }
