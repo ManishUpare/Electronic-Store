@@ -132,4 +132,14 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
     }
 
+    @Override
+    public CartDto getCartByUser(String userId) {
+
+        //fetch the user from DB
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + userId));
+
+        Cart cart = cartRepository.findByUser(user).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + user));
+
+        return mapper.map(cart,CartDto.class);
+    }
 }
