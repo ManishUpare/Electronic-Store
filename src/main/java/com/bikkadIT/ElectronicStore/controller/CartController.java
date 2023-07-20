@@ -79,6 +79,22 @@ public class CartController {
         return new ResponseEntity<>(apiResponse,HttpStatus.OK);
     }
 
+    /**
+     * @apiNote This method is for get Cart By User
+     * @param userId
+     * @return
+     */
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<CartDto> getCartByUser(@PathVariable String userId){
+
+        log.info("Entering the request to get Cart By User with userId:{} ", userId);
+
+        CartDto cartDto = cartService.getCartByUser(userId);
+
+        log.info("Completed the request to get Cart By User with userId:{} ", userId);
+
+        return new ResponseEntity<>(cartDto, HttpStatus.OK);
+    }
 
 
 }
