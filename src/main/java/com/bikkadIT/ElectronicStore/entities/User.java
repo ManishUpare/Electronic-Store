@@ -3,6 +3,9 @@ package com.bikkadIT.ElectronicStore.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -29,7 +32,10 @@ public class User  {
     @Column(length = 1000)
 
     private String about;
-    @Column(name = "user_image_name")
 
+    @Column(name = "user_image_name")
     private String imageName;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    private List<Order> orders=new ArrayList<>();
 }
