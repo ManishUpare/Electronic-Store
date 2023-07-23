@@ -7,6 +7,7 @@ import com.bikkadIT.ElectronicStore.exceptions.BadApiException;
 import com.bikkadIT.ElectronicStore.exceptions.ResourceNotFoundException;
 import com.bikkadIT.ElectronicStore.helper.AppConstant;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
+import com.bikkadIT.ElectronicStore.payloads.PageHelper;
 import com.bikkadIT.ElectronicStore.repositories.CartRepository;
 import com.bikkadIT.ElectronicStore.repositories.OrderRepository;
 import com.bikkadIT.ElectronicStore.repositories.UserRepository;
@@ -14,6 +15,10 @@ import com.bikkadIT.ElectronicStore.services.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -130,6 +135,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public PageableResponse<OrderDto> getAllOrders(int pageNumber, int pagSize, String sortBy, String sortDir) {
-        return null;
+
+        log.info("Initiating dao call to get All Orders");
+
+        //returns true if the strings are equal, and false if not.
+        Sort sort = (sortDir.equalsIgnoreCase("asc")) ? (Sort.by(sortBy).ascending()) : (Sort.by(sortBy).descending());
+
+        Pageable pageable= PageRequest.of(pageNumber,pagSize,sort);
+        Page<Order> page = orderRepository.findAll(pageable);
+
+        PageableResponse<OrderDto> response = PageHelper.getPageResponse(page, OrderDto.class);
+
+        log.info("Completed dao call to get All Orders");
+
+        return response;
     }
 }
