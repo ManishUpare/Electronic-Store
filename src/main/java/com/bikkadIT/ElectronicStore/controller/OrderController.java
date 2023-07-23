@@ -36,7 +36,27 @@ public class OrderController {
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
+    /**
+     * @apiNote This api is to remove orders
+     * @param orderId
+     * @return
+     */
 
+    @DeleteMapping("/remove/{orderId}")
+    public ResponseEntity<ApiResponse> removeOrder(@PathVariable String orderId){
+        log.info("Entering the request to remove order details");
+
+        orderService.removeOrder(orderId);
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status(HttpStatus.OK)
+                .message("Order is Removed !!")
+                .success(true)
+                .build();
+        log.info("Completed the request to remove order details");
+
+        return new ResponseEntity<>(apiResponse,HttpStatus.OK);
+    }
 
 
 
