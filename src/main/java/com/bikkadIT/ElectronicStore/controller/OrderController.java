@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -56,6 +57,20 @@ public class OrderController {
         log.info("Completed the request to remove order details");
 
         return new ResponseEntity<>(apiResponse,HttpStatus.OK);
+    }
+
+    /**
+     * @apiNote This api is to get order details By User
+     * @param userId
+     * @return
+     */
+    public ResponseEntity<List<OrderDto>> getOrderByUser(@PathVariable String userId){
+
+        log.info("Entering the request to get order details By User");
+        List<OrderDto> orders = orderService.getOrdersOfUser(userId);
+
+        log.info("Completed the request to get order details By User");
+        return new ResponseEntity<>(orders,HttpStatus.OK);
     }
 
 
