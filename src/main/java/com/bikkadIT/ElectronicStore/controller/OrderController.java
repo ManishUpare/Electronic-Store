@@ -2,6 +2,8 @@ package com.bikkadIT.ElectronicStore.controller;
 
 import com.bikkadIT.ElectronicStore.dtos.CreateOrderRequest;
 import com.bikkadIT.ElectronicStore.dtos.OrderDto;
+import com.bikkadIT.ElectronicStore.helper.AppConstant;
+import com.bikkadIT.ElectronicStore.helper.PageableResponse;
 import com.bikkadIT.ElectronicStore.payloads.ApiResponse;
 import com.bikkadIT.ElectronicStore.services.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ public class OrderController {
     private OrderService orderService;
 
     /**
+     * @Author Manish Upare
      * @apiNote This api is for creating orders
      * @param orderDto
      * @return
@@ -64,6 +67,7 @@ public class OrderController {
      * @param userId
      * @return
      */
+    @GetMapping("/users/{userId}")
     public ResponseEntity<List<OrderDto>> getOrderByUser(@PathVariable String userId){
 
         log.info("Entering the request to get order details By User");
@@ -73,8 +77,26 @@ public class OrderController {
         return new ResponseEntity<>(orders,HttpStatus.OK);
     }
 
+    /**
+     * @apiNote This method is to get all orders details
+     * @param pageNumber
+     * @param pageSize
+     * @param sortBy
+     * @param sortDir
+     * @return
+     */
 
+    @GetMapping("/getAllOrders")
+    public ResponseEntity <PageableResponse<OrderDto>> getAllOrders(
+            @RequestParam(value = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConstant.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstant.SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstant.SORT_DIR, required = false) String sortDir) {
 
+        PageableResponse<OrderDto> allOrders = orderService.getAllOrders(pageNumber, pageSize, sortBy, sortBy);
 
+        log.info("Entering the request for get all order data");
+        return new ResponseEntity<>(allOrders,HttpStatus.OK);
+    }
 
 }
