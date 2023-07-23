@@ -11,8 +11,10 @@ import com.bikkadIT.ElectronicStore.repositories.CartRepository;
 import com.bikkadIT.ElectronicStore.repositories.OrderRepository;
 import com.bikkadIT.ElectronicStore.repositories.UserRepository;
 import com.bikkadIT.ElectronicStore.services.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,8 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+@Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
@@ -36,6 +40,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto createOrder(CreateOrderRequest orderDto) {
+
+        log.info("Initiating dao call to create New Order");
 
         String cartId = orderDto.getCartId();
         String userId = orderDto.getUserId();
@@ -92,12 +98,18 @@ public class OrderServiceImpl implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
+        log.info("Completed dao call to create New Order");
         return mapper.map(savedOrder,OrderDto.class);
     }
 
     @Override
     public void removeOrder(String orderId) {
+        log.info("Initiating dao call to remove Order");
 
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + orderId));
+        orderRepository.delete(order);  //if order deleted OrderItem also deleted coz we use cascade.ALL in Order
+
+        log.info("Completed dao call to remove Order");
     }
 
     @Override
