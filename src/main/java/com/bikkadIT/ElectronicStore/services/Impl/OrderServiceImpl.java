@@ -114,7 +114,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getOrdersOfUser(String userId) {
-        return null;
+
+        log.info("Initiating dao call to get Orders By User");
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(AppConstant.NOT_FOUND + userId));
+
+        List<Order> orders = orderRepository.findByUser(user);
+
+        List<OrderDto> orderDtos = orders.stream().map(o -> mapper.map(orders, OrderDto.class)).collect(Collectors.toList());
+
+        log.info("Completed dao call to get Orders By User");
+
+        return orderDtos;
     }
 
     @Override
