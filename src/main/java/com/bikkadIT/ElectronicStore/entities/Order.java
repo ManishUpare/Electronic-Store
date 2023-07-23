@@ -19,6 +19,8 @@ public class Order {
     @Id
     private String orderId;
 
+    private String billingName;
+
     // Pending,Dispatched,Delivered
     // we can use ENUM also
     private String orderStatus;

@@ -1,5 +1,6 @@
 package com.bikkadIT.ElectronicStore.services;
 
+import com.bikkadIT.ElectronicStore.dtos.CreateOrderRequest;
 import com.bikkadIT.ElectronicStore.dtos.OrderDto;
 import com.bikkadIT.ElectronicStore.entities.Order;
 import com.bikkadIT.ElectronicStore.helper.PageableResponse;
@@ -10,7 +11,7 @@ public interface OrderService {
 
     // create Order
 
-    OrderDto createOrder(OrderDto orderDto,String userId);
+    OrderDto createOrder(CreateOrderRequest orderDto);
 
     // Remove Order
     void removeOrder(String orderId);

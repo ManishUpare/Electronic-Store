@@ -18,6 +18,8 @@ public class OrderDto {
 
     private String orderId;
 
+    private String billingName;
+
     private String orderStatus="PENDING";
 
     private String paymentStatus="NOTPAID";
