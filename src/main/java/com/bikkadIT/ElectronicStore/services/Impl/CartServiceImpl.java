@@ -86,7 +86,7 @@ public class CartServiceImpl implements CartService {
 
         List<CartItem> item = cart.getItem();
 
-        List<CartItem> updatedItems = item.stream().map(items -> {
+        item = item.stream().map(items -> {
 
             if (items.getProduct().getProductId().equals(productId)) {
                 //item already present in cart
@@ -98,7 +98,7 @@ public class CartServiceImpl implements CartService {
 
         }).collect(Collectors.toList());
 
-        cart.setItem(updatedItems);
+      //  cart.setItem(updatedItems);
 
         //   create/Add items
 
