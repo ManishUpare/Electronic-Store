@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +42,9 @@ public class UserServiceImpl implements UserService {
     @Value("${user.profile.image.path}")
     private String imagePath;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 
@@ -50,6 +54,9 @@ public class UserServiceImpl implements UserService {
         //generate unique id in String format
         String userId = UUID.randomUUID().toString();
         userDto.setUserId(userId);
+
+        //set encodeing password
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         logger.info("Initiating dao call for the save user details");
 
