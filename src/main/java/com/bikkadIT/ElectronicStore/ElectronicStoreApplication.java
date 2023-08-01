@@ -20,7 +20,10 @@ public class ElectronicStoreApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		System.out.println(passwordEncoder.encode("roh123"));
+//		System.out.println(passwordEncoder.encode("roh123"));
+//		System.out.println(passwordEncoder.encode("v@123"));
+//		System.out.println(passwordEncoder.encode("sania123"));
+//		System.out.println(passwordEncoder.encode("123"));
 
 	}
 }
